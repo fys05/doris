@@ -1,0 +1,29 @@
+version: '3'
+services:
+  docker-fe:
+    image: "apache/doris:1.2.1-fe-x86_64"
+    container_name: "doris-fe"
+    hostname: "fe-01"
+    network_mode: "host"
+    environment:
+      - FE_SERVERS=fe1:192.168.134.20:9010,fe2:192.168.134.21:9010,fe3:192.168.134.22:9010
+      - FE_ID=1
+    volumes:
+      - /mnt/datad/doris/fe/doris-meta:/opt/apache-doris/fe/doris-meta
+      - /mnt/datad/doris/fe/conf:/opt/apache-doris/fe/conf
+      - /mnt/datad/doris/fe/log:/opt/apache-doris/fe/log
+  docker-be:
+    image: "apache/doris:1.2.1-be-x86_64"
+    container_name: "doris-be"
+    hostname: "be-01"
+    network_mode: "host"
+    environment:
+      - FE_SERVERS=fe1:192.168.134.20:9010,fe2:192.168.134.21:9010,fe3:192.168.134.22:9010
+      - BE_ADDR=192.168.134.20:9050
+    volumes:
+      - /mnt/datad/doris/lib/doris_be:/opt/apache-doris/be/lib/doris_be
+      - /mnt/datad/doris/lib/meta_tool:/opt/apache-doris/be/lib/meta_tool
+      - /mnt/datad/doris/be/storage:/opt/apache-doris/be/storage
+      - /mnt/datad/doris/be/conf:/opt/apache-doris/be/conf
+      - /mnt/datad/doris/be/script:/docker-entrypoint-initdb.d
+      - /mnt/datad/doris/be/log:/opt/apache-doris/be/log
